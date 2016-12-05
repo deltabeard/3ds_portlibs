@@ -43,10 +43,15 @@ LIBOGG_VERSION        := $(LIBOGG)-1.3.2
 LIBOGG_SRC            := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD       := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
-LIBOPUS               := opus
+LIBOPUS               := libopus
 LIBOPUS_VERSION       := opus-1.2-alpha
 LIBOPUS_SRC           := $(LIBOPUS_VERSION).tar.gz
 LIBOPUS_DOWNLOAD      := "http://downloads.xiph.org/releases/opus/opus-1.2-alpha.tar.gz"
+
+LIBOPUSFILE           := libopusfile
+LIBOPUSFILE_VERSION   := opusfile-0.8
+LIBOPUSFILE_SRC       := $(LIBOPUSFILE_VERSION).tar.gz
+LIBOPUSFILE_DOWNLOAD  := "https://archive.mozilla.org/pub/opus/opusfile-0.8.tar.gz"
 
 LIBPNG                := libpng
 LIBPNG_VERSION        := $(LIBPNG)-1.6.21
@@ -112,6 +117,7 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
         $(LIBMAD) \
         $(LIBOGG) \
         $(LIBOPUS) \
+        $(LIBOPUSFILE) \
         $(LIBPNG) \
         $(MBED) \
         $(LIBXML2) \
@@ -133,7 +139,8 @@ all:
 	@echo "  $(LIBJPEGTURBO)"
 	@echo "  $(LIBMAD)"
 	@echo "  $(LIBOGG)"
-	@echo "  $(LIBOPUS)"
+	@echo "  $(LIBOPUS) (requires $(LIBOGG) to be installed)"
+	@echo "  $(LIBOPUSFILE) (requires $(LIBOGG) and $(LIBOPUS) to be installed)"
 	@echo "  $(LIBPNG) (requires zlib to be installed)"
 	@echo "  $(LIBXML2)"
 	@echo "  $(LIBXMP_LITE)"
@@ -144,7 +151,7 @@ all:
 	@echo "  $(XZ)"
 	@echo "  $(ZLIB)"
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
 
 DOWNLOAD = wget -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -177,6 +184,9 @@ $(LIBOGG_SRC):
 
 $(LIBOPUS_SRC):
 	@$(call DOWNLOAD,$@,$(LIBOPUS_DOWNLOAD))
+
+$(LIBOPUSFILE_SRC):
+	@$(call DOWNLOAD,$@,$(LIBOPUSFILE_DOWNLOAD))
 
 $(LIBPNG_SRC):
 	@$(call DOWNLOAD,$@,$(LIBPNG_DOWNLOAD))
@@ -263,8 +273,14 @@ $(LIBOGG): $(LIBOGG_SRC)
 $(LIBOPUS): $(LIBOPUS_SRC)
 	@[ -d $(LIBOPUS_VERSION) ] || tar -xzf $<
 	@cd $(LIBOPUS_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-rtcd
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-rtcd  --enable-fixed-point
 	@$(MAKE) -C $(LIBOPUS_VERSION)
+
+$(LIBOPUSFILE): $(LIBOPUSFILE_SRC)
+	@[ -d $(LIBOPUSFILE_VERSION) ] || tar -xzf $<
+	@cd $(LIBOPUSFILE_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-fixed-point
+	@$(MAKE) -C $(LIBOPUSFILE_VERSION)
 
 $(LIBPNG): $(LIBPNG_SRC)
 	@[ -d $(LIBPNG_VERSION) ] || tar -xJf $<
@@ -346,6 +362,7 @@ install:
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
 	@[ ! -d $(LIBOPUS_VERSION) ] || $(MAKE) -C $(LIBOPUS_VERSION) install
+	@[ ! -d $(LIBOPUSFILE_VERSION) ] || $(MAKE) -C $(LIBOPUSFILE_VERSION) install
 	@[ ! -d $(LIBPNG_VERSION) ] || $(MAKE) -C $(LIBPNG_VERSION) install
 	@[ ! -d $(LIBXML2_VERSION) ] || $(MAKE) -C $(LIBXML2_VERSION) install
 	@[ ! -d $(LIBXMP_LITE_VERSION) ] || $(MAKE) -C $(LIBXMP_LITE_VERSION) install
@@ -366,6 +383,7 @@ clean:
 	@$(RM) -r $(LIBMAD_VERSION)
 	@$(RM) -r $(LIBOGG_VERSION)
 	@$(RM) -r $(LIBOPUS_VERSION)
+	@$(RM) -r $(LIBOPUSFILE_VERSION)
 	@$(RM) -r $(LIBPNG_VERSION)
 	@$(RM) -r $(LIBXML2_VERSION)
 	@$(RM) -r $(LIBXMP_LITE_VERSION)
