@@ -73,6 +73,11 @@ MBED_VERSION          := $(MBED)-2.2.1
 MBED_SRC              := $(MBED_VERSION).tgz
 MBED_DOWNLOAD         := "https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz"
 
+MPG123                := mpg123
+MPG123_VERSION        := $(MPG123)-1.23.8
+MPG123_SRC            := $(MPG123_VERSION).tar.bz2
+MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.23.8.tar.bz2"
+
 SQLITE                := sqlite
 SQLITE_VERSION        := $(SQLITE)-autoconf-3100200
 SQLITE_SRC            := $(SQLITE_VERSION).tar.gz
@@ -103,8 +108,8 @@ export PATH           := $(DEVKITARM)/bin:$(PORTLIBS_PATH)/3ds/bin:$(PORTLIBS_PA
 export PKG_CONFIG     := $(PWD)/arm-none-eabi-pkg-config
 
 export CFLAGS         := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -O3 -mword-relocations -ffunction-sections
-export CPPFLAGS       := -I$(PORTLIBS_PATH)/armv6k/include
-export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
+export CPPFLAGS       := -I$(PORTLIBS_PATH)/armv6k/include -I/opt/devkitpro/ctrulib/libctru/include
+export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib -L/opt/devkitpro/ctrulib/libctru/lib
 
 .PHONY: all install install-zlib clean download \
         $(BZIP2) \
@@ -120,6 +125,7 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
         $(LIBOPUSFILE) \
         $(LIBPNG) \
         $(MBED) \
+        $(MPG123) \
         $(LIBXML2) \
         $(LIBXMP_LITE) \
         $(SQLITE) \
@@ -145,13 +151,14 @@ all:
 	@echo "  $(LIBXML2)"
 	@echo "  $(LIBXMP_LITE)"
 	@echo "  $(MBED) (requires zlib to be installed)"
+	@echo "  $(MPG123)"
 	@echo "  $(SQLITE)"
 	@echo "  $(TINYXML)"
 	@echo "  $(TREMOR) (requires $(LIBOGG) to be installed)"
 	@echo "  $(XZ)"
 	@echo "  $(ZLIB)"
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(MPG123_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
 
 DOWNLOAD = wget -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -199,6 +206,9 @@ $(LIBXMP_LITE_SRC):
 
 $(MBED_SRC):
 	@$(call DOWNLOAD,$@,$(MBED_DOWNLOAD))
+
+$(MPG123_SRC):
+	@$(call DOWNLOAD,$@,$(MPG123_DOWNLOAD))
 
 $(SQLITE_SRC):
 	@$(call DOWNLOAD,$@,$(SQLITE_DOWNLOAD))
@@ -312,6 +322,12 @@ $(MBED): $(MBED_SRC)
 	 -DENABLE_ZLIB_SUPPORT=TRUE -DENABLE_TESTING=FALSE -DENABLE_PROGRAMS=FALSE .
 	@$(MAKE) -C $(MBED_VERSION)
 
+$(MPG123): $(MPG123_SRC)
+	@[ -d $(MPG123_VERSION) ] || tar -xjf $<
+	@cd $(MPG123_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-ipv6=no --enable-network=no --enable-messages=no --enable-8bit=no --enable-32bit=no --enable-real=no --with-optimization=2  --with-cpu=arm_nofpu --enable-layer1=no --enable-layer2=no
+	@$(MAKE) -C $(MPG123_VERSION) src/libmpg123/libmpg123.la
+
 # sqlite won't work with -ffast-math
 $(SQLITE): $(SQLITE_SRC)
 	@[ -d $(SQLITE_VERSION) ] || tar -xzf $<
@@ -367,6 +383,7 @@ install:
 	@[ ! -d $(LIBXML2_VERSION) ] || $(MAKE) -C $(LIBXML2_VERSION) install
 	@[ ! -d $(LIBXMP_LITE_VERSION) ] || $(MAKE) -C $(LIBXMP_LITE_VERSION) install
 	@[ ! -d $(MBED_VERSION) ] || $(MAKE) -C $(MBED_VERSION) install
+	@[ ! -d $(MPG123_VERSION) ] || $(MAKE) -C $(MPG123_VERSION) install
 	@[ ! -d $(SQLITE_VERSION) ] || $(MAKE) -C $(SQLITE_VERSION) install-libLTLIBRARIES install-data
 	@[ ! -d $(TINYXML_VERSION) ] || $(MAKE) -C $(TINYXML_VERSION) install
 	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
@@ -388,6 +405,7 @@ clean:
 	@$(RM) -r $(LIBXML2_VERSION)
 	@$(RM) -r $(LIBXMP_LITE_VERSION)
 	@$(RM) -r $(MBED_VERSION)
+	@$(RM) -r $(MPG123_VERSION)
 	@$(RM) -r $(SQLITE_VERSION)
 	@$(RM) -r $(TINYXML_VERSION)
 	@$(RM) -r $(TREMOR_VERSION)
