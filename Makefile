@@ -8,6 +8,11 @@ FREETYPE_VERSION      := $(FREETYPE)-2.6.2
 FREETYPE_SRC          := $(FREETYPE_VERSION).tar.bz2
 FREETYPE_DOWNLOAD     := http://download.savannah.gnu.org/releases/freetype/freetype-2.6.2.tar.bz2
 
+FFMPEG                := ffmpeg
+FFMPEG_VERSION       := $(FFMPEG)-3.2.2
+FFMPEG_SRC            := $(FFMPEG_VERSION).tar.bz2
+FFMPEG_DOWNLOAD       := http://ffmpeg.org/releases/ffmpeg-3.2.2.tar.bz2
+
 GIFLIB                := giflib
 GIFLIB_VERSION        := $(GIFLIB)-5.1.1
 GIFLIB_SRC            := $(GIFLIB_VERSION).tar.bz2
@@ -114,6 +119,7 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib -L/opt/devkitpro/ctrulib/
 .PHONY: all install install-zlib clean download \
         $(BZIP2) \
         $(FREETYPE) \
+        $(FFMPEG) \
         $(GIFLIB) \
         $(JANSSON) \
         $(LIBCONFIG) \
@@ -138,6 +144,7 @@ all:
 	@echo "Please choose one of the following targets:"
 	@echo "  $(BZIP2)"
 	@echo "  $(FREETYPE) (requires zlib to be installed)"
+	@echo "  $(FFMPEG) (requires zlib to be installed)"
 	@echo "  $(GIFLIB)"
 	@echo "  $(JANSSON)"
 	@echo "  $(LIBCONFIG)"
@@ -158,7 +165,7 @@ all:
 	@echo "  $(XZ)"
 	@echo "  $(ZLIB)"
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(MPG123_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(FFMPEG_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(MPG123_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
 
 DOWNLOAD = wget -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -167,6 +174,9 @@ $(BZIP2_SRC):
 
 $(FREETYPE_SRC):
 	$(call DOWNLOAD,$@,$(FREETYPE_DOWNLOAD))
+
+$(FFMPEG_SRC):
+	$(call DOWNLOAD,$@,$(FFMPEG_DOWNLOAD))
 
 $(GIFLIB_SRC):
 	$(call DOWNLOAD,$@,$(GIFLIB_DOWNLOAD))
@@ -235,6 +245,41 @@ $(FREETYPE): $(FREETYPE_SRC)
 	@cd $(FREETYPE_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-harfbuzz
 	@$(MAKE) -C $(FREETYPE_VERSION)
+
+$(FFMPEG): $(FFMPEG_SRC)
+	@[ -d $(FFMPEG_VERSION) ] || tar -xjf $<
+	@cd $(FFMPEG_VERSION) && \
+	./configure --prefix=$(PORTLIBS_PATH)/armv6k \
+		--enable-cross-compile \
+		--cross-prefix=$(DEVKITARM)/bin/arm-none-eabi- \
+		--disable-shared \
+		--disable-runtime-cpudetect \
+		--disable-armv5te \
+		--disable-programs \
+		--disable-doc \
+		--disable-everything \
+		--enable-gpl \
+		--enable-decoder=aac,ac3,mp3,opus,flac,pcm_s16le \
+		--enable-demuxer=mov,h264,m4a,ogg \
+		--enable-protocol=file \
+		--enable-static \
+		--enable-small \
+		--pkg-config=$(PWD)/arm-none-eabi-pkg-config \
+		--arch=armv6k \
+		--cpu=mpcore \
+		--disable-armv6t2 \
+		--disable-neon \
+		--target-os=none \
+		--extra-cflags=" -DARM11 -D_3DS -mword-relocations -fomit-frame-pointer -ffast-math -march=armv6k -mtune=mpcore -mfloat-abi=hard" \
+		--extra-cxxflags=" -DARM11 -D_3DS -mword-relocations -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -std=gnu++11 -march=armv6k -mtune=mpcore -mfloat-abi=hard" \
+		--extra-ldflags=" -specs=3dsx.specs -march=armv6k -mtune=mpcore -mfloat-abi=hard -L$(DEVKITARM)/lib  -L$(DEVKITPRO)/libctru/lib  -L$(DEVKITPRO)/portlibs/armv6k/lib -lctru " \
+		--disable-bzlib \
+		--disable-iconv \
+		--disable-lzma \
+		--disable-sdl \
+		--disable-securetransport \
+		--disable-xlib
+	@$(MAKE) -C $(FFMPEG_VERSION)
 
 $(GIFLIB): $(GIFLIB_SRC)
 	@[ -d $(GIFLIB_VERSION) ] || tar -xjf $<
@@ -370,6 +415,7 @@ install:
 		chmod a+r $(PORTLIBS_PATH)/armv6k/lib/libbz2.a; \
 	fi
 	@[ ! -d $(FREETYPE_VERSION) ] || $(MAKE) -C $(FREETYPE_VERSION) install
+	@[ ! -d $(FFMPEG_VERSION) ] || $(MAKE) -C $(FFMPEG_VERSION) install
 	@[ ! -d $(GIFLIB_VERSION) ] || $(MAKE) -C $(GIFLIB_VERSION) install
 	@[ ! -d $(JANSSON_VERSION) ] || $(MAKE) -C $(JANSSON_VERSION) install
 	@[ ! -d $(LIBCONFIG_VERSION) ] || $(MAKE) -C $(LIBCONFIG_VERSION)/lib install
@@ -392,6 +438,7 @@ install:
 clean:
 	@$(RM) -r $(BZIP2_VERSION)
 	@$(RM) -r $(FREETYPE_VERSION)
+	@$(RM) -r $(FFMPEG_VERSION)
 	@$(RM) -r $(GIFLIB_VERSION)
 	@$(RM) -r $(JANSSON_VERSION)
 	@$(RM) -r $(LIBCONFIG_VERSION)
