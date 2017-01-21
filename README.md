@@ -23,7 +23,10 @@ Currently supports the following portlibs:
 * libexif
 * libjpeg-turbo
 * libmad
+* libmpg123 (can only be installed manually at this time)
 * libogg
+* libopus (requires ogg)
+* libopusfile (requires libopus)
 * libpng (requires zlib)
 * libxml2
 * libxmp-lite
