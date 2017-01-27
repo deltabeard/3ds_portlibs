@@ -257,14 +257,23 @@ $(FFMPEG): $(FFMPEG_SRC)
 		--disable-armv5te \
 		--disable-programs \
 		--disable-doc \
-		--disable-everything \
+		--disable-network \
 		--enable-gpl \
-		--enable-decoder=aac,ac3,mp3,opus,flac,pcm_s16le \
-		--enable-demuxer=mov,h264,m4a,ogg \
+		--disable-encoders \
+		--disable-hwaccels \
+		--disable-muxers \
+		--disable-bsfs \
+		--disable-protocols \
+		--disable-indevs \
+		--disable-outdevs \
+		--disable-devices \
+		--disable-filters \
+		--disable-decoder=h264,h263,hevc,aac \
 		--enable-protocol=file \
 		--enable-static \
 		--enable-small \
-		--pkg-config=$(PWD)/arm-none-eabi-pkg-config \
+		--disable-debug \
+		--pkg-config=$(PKG_CONFIG) \
 		--arch=armv6k \
 		--cpu=mpcore \
 		--disable-armv6t2 \
