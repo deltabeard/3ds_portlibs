@@ -13,6 +13,18 @@ libarchive
 
 freeShop wasn't working with those directives, is it now ?
 
+libxml2
+-------
+
+libxml2 wont compile, with reference undefined to gzdOpen (zlib is installed though)
+
+
+tremor
+------
+
+tremor wont compile, with a configure error
+
+
 SQLite
 ------
 

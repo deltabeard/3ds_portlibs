@@ -56,17 +56,21 @@ List of portlibs supported
 * libogg
 * libpng (requires zlib)
 * libvorbis
-* libxml2
 * libxmp-lite
 * nettle
 * minixml
 * mbedtls (requires zlib) (without net component)
 * sqlite
 * tinyxml2
-* tremor (requires libogg)
 * wslay
 * xz
 * zlib
+
+List of portlibs temporary unsupported
+--------------------------------------
+
+* libxml2
+* tremor (requires libogg)
 
 
 Download links:
