@@ -91,6 +91,7 @@ Download links:
 * [nettle-3.3] (https://ftp.gnu.org/gnu/nettle/nettle-3.3.tar.gz)
 * [minixml-2.9] (https://github.com/michaelrsweet/mxml/releases/download/release-2.9/mxml-2.9.tar.gz)
 * [mbedtls-2.2.1] (https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz)
+* [speex-1.2rc1] (http://downloads.xiph.org/releases/speex/speex-1.2rc1.tar.gz)
 * [sqlite-autoconf-3100200.tar.gz] (https://www.sqlite.org/2016/sqlite-autoconf-3100200.tar.gz)
 * [tinyxml2-3.0.0.tar.gz] (https://github.com/leethomason/tinyxml2/archive/3.0.0.tar.gz)
 * [tremor-2a1a8f6] (https://git.xiph.org/?p=tremor.git;a=snapshot;h=2a1a8f621e500fdf0749f115e2206f82919560a3;sf=tgz)
