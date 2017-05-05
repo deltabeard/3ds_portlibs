@@ -111,11 +111,11 @@ FMT_VERSION           := $(FMT)-3.0.1
 FMT_SRC               := $(FMT_VERSION).tar.gz
 FMT_DOWNLOAD          := https://github.com/fmtlib/fmt/archive/3.0.1.tar.gz
 
-# libarchive for dealing with lots of archives files
+# libarchive for dealing with lots of archives files : we use libarchive download file because of the configure file present, which is not in the github repo link
 LIBARCHIVE                   := libarchive
 LIBARCHIVE_VERSION           := $(LIBARCHIVE)-3.1.2
 LIBARCHIVE_SRC               := $(LIBARCHIVE_VERSION).tar.gz
-LIBARCHIVE_DOWNLOAD          := https://github.com/libarchive/libarchive/archive/v3.1.2.tar.gz
+LIBARCHIVE_DOWNLOAD          := http://www.libarchive.org/downloads/libarchive-3.1.2.tar.gz
 
 
 ######################################
@@ -133,12 +133,6 @@ EXPAT                := expat
 EXPAT_VERSION        := $(EXPAT)-2.1.0
 EXPAT_SRC            := $(EXPAT_VERSION).tar.gz
 EXPAT_DOWNLOAD       := "http://sourceforge.net/projects/expat/files/expat/2.1.0/expat-2.1.0.tar.gz"
-
-# PhysicsFS, deal with a lot of files games used
-PHYSFS               := physfs
-PHYSFS_VERSION       := $(PHYSFS)-2.0.3
-PHYSFS_SRC           := $(PHYSFS_VERSION).tar.bz2
-PHYSFS_DOWNLOAD      := "https://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2"
 
 # Nettle, cryptographic lib
 NETTLE                 := nettle
@@ -194,7 +188,6 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
 		$(LIBARCHIVE) \
 		$(MXML) \
 		$(EXPAT) \
-		$(PHYSFS) \
 		$(NETTLE) \
 		$(WSLAY)
 			
@@ -222,13 +215,12 @@ all:
 	@echo "  $(TREMOR) (requires $(LIBOGG) to be installed)"
 	@echo "  $(XZ)"
 	@echo "  $(ZLIB)"
-	@echo "  $(LIBVORBIS)"
+	@echo "  $(LIBVORBIS) (requires $(LIBOGG) to be installed)"
 	@echo "  $(LIBFAAD2)"
 	@echo "  $(FMT)"
 	@echo "  $(LIBARCHIVE)"
 	@echo "  $(MXML)"
 	@echo "  $(EXPAT)"
-	@echo "  $(PHYSFS)"
 	@echo "  $(NETTLE)"
 	@echo "  $(WSLAY)"
 
@@ -236,7 +228,7 @@ all:
 # Download 
 ######################################
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC) $(LIBVORBIS_SRC) $(LIBFAAD2_SRC) $(FMT_SRC) $(LIBARCHIVE_SRC) $(MXML_SRC) $(EXPAT_SRC) $(PHYSFS_SRC) $(NETTLE_SRC) $(WSLAY_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC) $(LIBVORBIS_SRC) $(LIBFAAD2_SRC) $(FMT_SRC) $(LIBARCHIVE_SRC) $(MXML_SRC) $(EXPAT_SRC) $(NETTLE_SRC) $(WSLAY_SRC)
 
 DOWNLOAD = wget --no-check-certificate -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -315,9 +307,6 @@ $(MXML_SRC):
 
 $(EXPAT_SRC):
 	@$(call DOWNLOAD,$@,$(EXPAT_DOWNLOAD))
-
-$(PHYSFS_SRC):
-	@$(call DOWNLOAD,$@,$(PHYSFS_DOWNLOAD))
 
 $(NETTLE_SRC):
 	@$(call DOWNLOAD,$@,$(NETTLE_DOWNLOAD))
@@ -448,60 +437,52 @@ $(ZLIB): $(ZLIB_SRC)
 $(LIBVORBIS): $(LIBVORBIS_SRC)
 	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
 	@cd $(LIBVORBIS_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBVORBIS_VERSION)
 	
 $(LIBFAAD2): $(LIBFAAD2_SRC)
 	@[ -d $(LIBFAAD2_VERSION) ] || tar -xaf $<
 	@cd $(LIBFAAD2_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBFAAD2_VERSION)
 
-$(FMT):
-	@[ -d $(FMT_VERSION) ] || git clone $(FMT_REPO) $(FMT_VERSION)
+$(FMT): $(FMT_SRC)
+	@[ -d $(FMT_VERSION) ] || tar -xzf $<
 	@cd $(FMT_VERSION) && \
-	 git reset --hard $(FMT_GIT_CHECKOUT) && \
 	 patch -Np1 -i ../fmt.patch && \
-	 cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_CXX_FLAGS="${CFLAGS}" -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DCMAKE_INSTALL_PREFIX=$(PORTLIBS) -DFMT_TEST=OFF .
+	 cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_CXX_FLAGS="${CFLAGS}" -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/armv6k -DFMT_TEST=OFF .
 	@$(MAKE) -C $(FMT_VERSION) VERBOSE=1
 	
 $(LIBARCHIVE): $(LIBARCHIVE_SRC)
 	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xaf $<
 	@cd $(LIBARCHIVE_VERSION) && \
 	 patch -Np1 -i ../libarchive.patch && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
 	@$(MAKE) -C $(LIBARCHIVE_VERSION)
 
 $(MXML): $(MXML_SRC)
 	@[ -d $(MXML_VERSION) ] || tar -xaf $<
 	@cd $(MXML_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --disable-threads
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --disable-threads
 	@$(MAKE) -C $(MXML_VERSION) libmxml.a
 	
 $(EXPAT): $(EXPAT_SRC)
 	@[ -d $(EXPAT_VERSION) ] || tar -xaf $<
 	@cd $(EXPAT_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(EXPAT_VERSION)
-	
-$(PHYSFS): $(PHYSFS_SRC)
-	@[ -d $(PHYSFS_VERSION) ] || tar -xaf $<
-	@cd $(PHYSFS_VERSION) && \
-	cmake -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DPHYSFS_HAVE_THREAD_SUPPORT=FALSE -DCMAKE_INSTALL_PREFIX=$(PORTLIBS) -DPHYSFS_BUILD_TEST=FALSE -DPHYSFS_BUILD_SHARED=FALSE -DPHYSFS_BUILD_STATIC=TRUE .
-	# ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
-	@$(MAKE) -C $(PHYSFS_VERSION)
-	
+
 $(NETTLE): $(NETTLE_SRC)
 	@[ -d $(NETTLE_VERSION) ] || tar -xaf $<
 	@cd $(NETTLE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --disable-tools
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-tools
 	@$(MAKE) -C $(NETTLE_VERSION) libnettle.a
 
 $(WSLAY): $(WSLAY_SRC)
 	@[ -d $(WSLAY_VERSION) ] || tar -xaf $<
 	@cd $(WSLAY_VERSION) && \
 	 autoreconf -i && automake && autoconf && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(WSLAY_VERSION)/lib
 	
 ######################################
@@ -540,7 +521,6 @@ install:
 	@[ ! -d $(LIBARCHIVE_VERSION) ] || $(MAKE) -C $(LIBARCHIVE_VERSION) install
 	@[ ! -d $(MXML_VERSION) ] || $(MAKE) -C $(MXML_VERSION) install-libmxml.a
 	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
-	@[ ! -d $(PHYSFS_VERSION) ] || $(MAKE) -C $(PHYSFS_VERSION) install	
 	@[ ! -d $(NETTLE_VERSION) ] || $(MAKE) -C $(NETTLE_VERSION) install-static
 	@[ ! -d $(WSLAY_VERSION) ] || $(MAKE) -C $(WSLAY_VERSION)/lib install
 	
@@ -569,9 +549,9 @@ clean:
 	@$(RM) -r $(ZLIB_VERSION)
 	@$(RM) -r $(LIBVORBIS_VERSION)
 	@$(RM) -r $(LIBFAAD2_VERSION)
+	@$(RM) -r $(FMT_VERSION)
 	@$(RM) -r $(LIBARCHIVE_VERSION)
 	@$(RM) -r $(MXML_VERSION)
 	@$(RM) -r $(EXPAT_VERSION)
-	@$(RM) -r $(PHYSFS_VERSION)
 	@$(RM) -r $(NETTLE_VERSION)
 	@$(RM) -r $(WSLAY_VERSION)

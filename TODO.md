@@ -6,8 +6,12 @@ List of things to get done.
 General
 -------
 
-* Change `-mfloat-abi=softfp` to `-mfloat-abi=hard` when new devkitARM is
-  released.
+Backup lib archives which are not on github
+
+libarchive
+----------
+
+freeShop wasn't working with those directives, is it now ?
 
 SQLite
 ------
