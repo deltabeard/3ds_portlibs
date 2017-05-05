@@ -104,3 +104,4 @@ Thanks
 Thanks to :
 - The original 3DS portlibs git and all the developers behind it
 - Cruel, with his fork of portlibs containing various libs which can be useful
+- carstene1ns for his original portlibs of speex for Wii : https://github.com/carstene1ns/portlibs-wii/tree/master/speex

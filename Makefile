@@ -1,3 +1,7 @@
+######################################
+# Original portlibs
+######################################
+
 BZIP2                 := bzip2
 BZIP2_VERSION         := $(BZIP2)-1.0.6
 BZIP2_SRC             := $(BZIP2_VERSION).tar.gz
@@ -89,6 +93,7 @@ ZLIB_SRC              := $(ZLIB_VERSION).tar.gz
 ZLIB_DOWNLOAD         := http://prdownloads.sourceforge.net/libpng/zlib-1.2.8.tar.gz?download
 
 
+
 ######################################
 # Cruel portlibs which could be useful
 ######################################
@@ -146,6 +151,16 @@ WSLAY_VERSION          := $(WSLAY)-release-1.0.0
 WSLAY_SRC              := $(WSLAY_VERSION).tar.gz
 WSLAY_DOWNLOAD         := "https://github.com/tatsuhiro-t/wslay/archive/release-1.0.0.tar.gz"
 
+######################################
+# Others portlibs
+######################################
+
+# speexed, used in DrawAttack
+SPEEX                 := speex
+SPEEX_VERSION         := $(SPEEX)-1.2rc1
+SPEEX_SRC             := $(SPEEX_VERSION).tar.gz
+SPEEX_DOWNLOAD        := http://downloads.xiph.org/releases/speex/speex-1.2rc1.tar.gz
+
 
 ######################################
 # Global config for compiling those libs
@@ -189,7 +204,8 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
 		$(MXML) \
 		$(EXPAT) \
 		$(NETTLE) \
-		$(WSLAY)
+		$(WSLAY) \
+		$(SPEEX)
 			
 ######################################
 # Help 
@@ -223,6 +239,7 @@ all:
 	@echo "  $(EXPAT)"
 	@echo "  $(NETTLE)"
 	@echo "  $(WSLAY)"
+	@echo "  $(SPEEX)"
 
 ######################################
 # Download 
@@ -313,6 +330,9 @@ $(NETTLE_SRC):
 
 $(WSLAY_SRC):
 	@$(call DOWNLOAD,$@,$(WSLAY_DOWNLOAD))
+	
+$(SPEEX_SRC):
+	@$(call DOWNLOAD,$@,$(SPEEX_DOWNLOAD))
 
 ######################################
 # Cross-compile directives for each lib with patches if need one
@@ -484,7 +504,13 @@ $(WSLAY): $(WSLAY_SRC)
 	 autoreconf -i && automake && autoconf && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(WSLAY_VERSION)/lib
-	
+
+$(SPEEX): $(SPEEX_SRC)
+	@[ -d $(SPEEX_VERSION) ] || tar -xzf $<
+	@cd $(SPEEX_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-fixed-point CFLAGS="$(CFLAGS)"
+	@$(MAKE) -C $(SPEEX_VERSION)
+
 ######################################
 # Installing libs in devkitPro/portlibs/armv6k
 ######################################
@@ -523,6 +549,7 @@ install:
 	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
 	@[ ! -d $(NETTLE_VERSION) ] || $(MAKE) -C $(NETTLE_VERSION) install-static
 	@[ ! -d $(WSLAY_VERSION) ] || $(MAKE) -C $(WSLAY_VERSION)/lib install
+	@[ ! -d $(SPEEX_VERSION) ] || $(MAKE) -C $(SPEEX_VERSION) install	
 	
 ######################################
 # Cleaning directory and files
@@ -555,3 +582,4 @@ clean:
 	@$(RM) -r $(EXPAT_VERSION)
 	@$(RM) -r $(NETTLE_VERSION)
 	@$(RM) -r $(WSLAY_VERSION)
+	@$(RM) -r $(SPEEX_VERSION)
