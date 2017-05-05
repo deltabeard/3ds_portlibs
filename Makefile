@@ -88,6 +88,75 @@ ZLIB_VERSION          := $(ZLIB)-1.2.8
 ZLIB_SRC              := $(ZLIB_VERSION).tar.gz
 ZLIB_DOWNLOAD         := http://prdownloads.sourceforge.net/libpng/zlib-1.2.8.tar.gz?download
 
+
+######################################
+# Cruel portlibs which could be useful
+######################################
+
+# libvorbis
+LIBVORBIS            := libvorbis
+LIBVORBIS_VERSION    := $(LIBVORBIS)-1.3.5
+LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
+LIBVORBIS_DOWNLOAD   := "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz"
+
+# lib for AAC audio files
+LIBFAAD2             := faad2
+LIBFAAD2_VERSION     := $(LIBFAAD2)-2.7
+LIBFAAD2_SRC         := $(LIBFAAD2_VERSION).tar.gz
+LIBFAAD2_DOWNLOAD    := "http://downloads.sourceforge.net/faac/faad2-2.7.tar.gz"
+
+#libfmt for internationalization and printf
+FMT                   := fmt
+FMT_VERSION           := $(FMT)-3.0.1
+FMT_SRC               := $(FMT_VERSION).tar.gz
+FMT_DOWNLOAD          := https://github.com/fmtlib/fmt/archive/3.0.1.tar.gz
+
+# libarchive for dealing with lots of archives files
+LIBARCHIVE                   := libarchive
+LIBARCHIVE_VERSION           := $(LIBARCHIVE)-3.1.2
+LIBARCHIVE_SRC               := $(LIBARCHIVE_VERSION).tar.gz
+LIBARCHIVE_DOWNLOAD          := https://github.com/libarchive/libarchive/archive/v3.1.2.tar.gz
+
+
+######################################
+# Other Cruel portlibs, may not be useful, but keeping it might help someone
+######################################
+
+# Another lib for parsing xml
+MXML                 := mxml
+MXML_VERSION         := $(MXML)-2.9
+MXML_SRC             := $(MXML_VERSION).tar.gz
+MXML_DOWNLOAD        := "https://github.com/michaelrsweet/mxml/releases/download/release-2.9/mxml-2.9.tar.gz"
+
+# Another lib for parsing xml
+EXPAT                := expat
+EXPAT_VERSION        := $(EXPAT)-2.1.0
+EXPAT_SRC            := $(EXPAT_VERSION).tar.gz
+EXPAT_DOWNLOAD       := "http://sourceforge.net/projects/expat/files/expat/2.1.0/expat-2.1.0.tar.gz"
+
+# PhysicsFS, deal with a lot of files games used
+PHYSFS               := physfs
+PHYSFS_VERSION       := $(PHYSFS)-2.0.3
+PHYSFS_SRC           := $(PHYSFS_VERSION).tar.bz2
+PHYSFS_DOWNLOAD      := "https://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2"
+
+# Nettle, cryptographic lib
+NETTLE                 := nettle
+NETTLE_VERSION          := $(NETTLE)-3.3
+NETTLE_SRC              := $(NETTLE_VERSION).tar.gz
+NETTLE_DOWNLOAD         := "https://ftp.gnu.org/gnu/nettle/nettle-3.3.tar.gz"
+
+# Websocket lib
+WSLAY                  := wslay
+WSLAY_VERSION          := $(WSLAY)-release-1.0.0
+WSLAY_SRC              := $(WSLAY_VERSION).tar.gz
+WSLAY_DOWNLOAD         := "https://github.com/tatsuhiro-t/wslay/archive/release-1.0.0.tar.gz"
+
+
+######################################
+# Global config for compiling those libs
+######################################
+
 export PORTLIBS_PATH  := $(DEVKITPRO)/portlibs
 export PATH           := $(DEVKITARM)/bin:$(PORTLIBS_PATH)/3ds/bin:$(PORTLIBS_PATH)/armv6k/bin:$(PATH)
 export PKG_CONFIG     := $(PWD)/arm-none-eabi-pkg-config
@@ -95,6 +164,10 @@ export PKG_CONFIG     := $(PWD)/arm-none-eabi-pkg-config
 export CFLAGS         := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -O3 -mword-relocations -ffunction-sections
 export CPPFLAGS       := -I$(PORTLIBS_PATH)/armv6k/include
 export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
+
+######################################
+# Targets 
+######################################
 
 .PHONY: all install install-zlib clean download \
         $(BZIP2) \
@@ -114,7 +187,20 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
         $(TINYXML) \
         $(TREMOR) \
         $(XZ) \
-        $(ZLIB)
+        $(ZLIB) \
+		$(LIBVORBIS) \
+		$(LIBFAAD2) \
+		$(FMT) \
+		$(LIBARCHIVE) \
+		$(MXML) \
+		$(EXPAT) \
+		$(PHYSFS) \
+		$(NETTLE) \
+		$(WSLAY)
+			
+######################################
+# Help 
+######################################
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -136,10 +222,27 @@ all:
 	@echo "  $(TREMOR) (requires $(LIBOGG) to be installed)"
 	@echo "  $(XZ)"
 	@echo "  $(ZLIB)"
+	@echo "  $(LIBVORBIS)"
+	@echo "  $(LIBFAAD2)"
+	@echo "  $(FMT)"
+	@echo "  $(LIBARCHIVE)"
+	@echo "  $(MXML)"
+	@echo "  $(EXPAT)"
+	@echo "  $(PHYSFS)"
+	@echo "  $(NETTLE)"
+	@echo "  $(WSLAY)"
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC)
+######################################
+# Download 
+######################################
+
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC) $(LIBVORBIS_SRC) $(LIBFAAD2_SRC) $(FMT_SRC) $(LIBARCHIVE_SRC) $(MXML_SRC) $(EXPAT_SRC) $(PHYSFS_SRC) $(NETTLE_SRC) $(WSLAY_SRC)
 
 DOWNLOAD = wget --no-check-certificate -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
+
+######################################
+# Download specific lib
+######################################
 
 $(BZIP2_SRC):
 	@$(call DOWNLOAD,$@,$(BZIP2_DOWNLOAD))
@@ -194,6 +297,37 @@ $(XZ_SRC):
 
 $(ZLIB_SRC):
 	@$(call DOWNLOAD,$@,$(ZLIB_DOWNLOAD))
+
+$(LIBVORBIS_SRC):
+	@$(call DOWNLOAD,$@,$(LIBVORBIS_DOWNLOAD))
+
+$(LIBFAAD2_SRC):
+	@$(call DOWNLOAD,$@,$(LIBFAAD2_DOWNLOAD))
+
+$(FMT_SRC):
+	@$(call DOWNLOAD,$@,$(FMT_DOWNLOAD))
+
+$(LIBARCHIVE_SRC):
+	@$(call DOWNLOAD,$@,$(LIBARCHIVE_DOWNLOAD))
+
+$(MXML_SRC):
+	@$(call DOWNLOAD,$@,$(MXML_DOWNLOAD))
+
+$(EXPAT_SRC):
+	@$(call DOWNLOAD,$@,$(EXPAT_DOWNLOAD))
+
+$(PHYSFS_SRC):
+	@$(call DOWNLOAD,$@,$(PHYSFS_DOWNLOAD))
+
+$(NETTLE_SRC):
+	@$(call DOWNLOAD,$@,$(NETTLE_DOWNLOAD))
+
+$(WSLAY_SRC):
+	@$(call DOWNLOAD,$@,$(WSLAY_DOWNLOAD))
+
+######################################
+# Cross-compile directives for each lib with patches if need one
+######################################
 
 $(BZIP2): $(BZIP2_SRC)
 	@[ -d $(BZIP2_VERSION) ] || tar -xzf $<
@@ -311,6 +445,69 @@ $(ZLIB): $(ZLIB_SRC)
 	 CHOST=arm-none-eabi ./configure --static --prefix=$(PORTLIBS_PATH)/armv6k
 	@$(MAKE) -C $(ZLIB_VERSION)
 
+$(LIBVORBIS): $(LIBVORBIS_SRC)
+	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
+	@cd $(LIBVORBIS_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(LIBVORBIS_VERSION)
+	
+$(LIBFAAD2): $(LIBFAAD2_SRC)
+	@[ -d $(LIBFAAD2_VERSION) ] || tar -xaf $<
+	@cd $(LIBFAAD2_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(LIBFAAD2_VERSION)
+
+$(FMT):
+	@[ -d $(FMT_VERSION) ] || git clone $(FMT_REPO) $(FMT_VERSION)
+	@cd $(FMT_VERSION) && \
+	 git reset --hard $(FMT_GIT_CHECKOUT) && \
+	 patch -Np1 -i ../fmt.patch && \
+	 cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_CXX_FLAGS="${CFLAGS}" -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DCMAKE_INSTALL_PREFIX=$(PORTLIBS) -DFMT_TEST=OFF .
+	@$(MAKE) -C $(FMT_VERSION) VERBOSE=1
+	
+$(LIBARCHIVE): $(LIBARCHIVE_SRC)
+	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xaf $<
+	@cd $(LIBARCHIVE_VERSION) && \
+	 patch -Np1 -i ../libarchive.patch && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
+	@$(MAKE) -C $(LIBARCHIVE_VERSION)
+
+$(MXML): $(MXML_SRC)
+	@[ -d $(MXML_VERSION) ] || tar -xaf $<
+	@cd $(MXML_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --disable-threads
+	@$(MAKE) -C $(MXML_VERSION) libmxml.a
+	
+$(EXPAT): $(EXPAT_SRC)
+	@[ -d $(EXPAT_VERSION) ] || tar -xaf $<
+	@cd $(EXPAT_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(EXPAT_VERSION)
+	
+$(PHYSFS): $(PHYSFS_SRC)
+	@[ -d $(PHYSFS_VERSION) ] || tar -xaf $<
+	@cd $(PHYSFS_VERSION) && \
+	cmake -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DPHYSFS_HAVE_THREAD_SUPPORT=FALSE -DCMAKE_INSTALL_PREFIX=$(PORTLIBS) -DPHYSFS_BUILD_TEST=FALSE -DPHYSFS_BUILD_SHARED=FALSE -DPHYSFS_BUILD_STATIC=TRUE .
+	# ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(PHYSFS_VERSION)
+	
+$(NETTLE): $(NETTLE_SRC)
+	@[ -d $(NETTLE_VERSION) ] || tar -xaf $<
+	@cd $(NETTLE_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --disable-tools
+	@$(MAKE) -C $(NETTLE_VERSION) libnettle.a
+
+$(WSLAY): $(WSLAY_SRC)
+	@[ -d $(WSLAY_VERSION) ] || tar -xaf $<
+	@cd $(WSLAY_VERSION) && \
+	 autoreconf -i && automake && autoconf && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(WSLAY_VERSION)/lib
+	
+######################################
+# Installing libs in devkitPro/portlibs/armv6k
+######################################
+
 install-zlib:
 	@$(MAKE) -C $(ZLIB_VERSION) install
 
@@ -337,6 +534,19 @@ install:
 	@[ ! -d $(TINYXML_VERSION) ] || $(MAKE) -C $(TINYXML_VERSION) install
 	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
 	@[ ! -d $(XZ_VERSION) ] || $(MAKE) -C $(XZ_VERSION) install
+	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
+	@[ ! -d $(LIBFAAD2_VERSION) ] || $(MAKE) -C $(LIBFAAD2_VERSION) install
+	@[ ! -d $(FMT_VERSION) ] || $(MAKE) -C $(FMT_VERSION) install
+	@[ ! -d $(LIBARCHIVE_VERSION) ] || $(MAKE) -C $(LIBARCHIVE_VERSION) install
+	@[ ! -d $(MXML_VERSION) ] || $(MAKE) -C $(MXML_VERSION) install-libmxml.a
+	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
+	@[ ! -d $(PHYSFS_VERSION) ] || $(MAKE) -C $(PHYSFS_VERSION) install	
+	@[ ! -d $(NETTLE_VERSION) ] || $(MAKE) -C $(NETTLE_VERSION) install-static
+	@[ ! -d $(WSLAY_VERSION) ] || $(MAKE) -C $(WSLAY_VERSION)/lib install
+	
+######################################
+# Cleaning directory and files
+######################################
 
 clean:
 	@$(RM) -r $(BZIP2_VERSION)
@@ -357,3 +567,11 @@ clean:
 	@$(RM) -r $(TREMOR_VERSION)
 	@$(RM) -r $(XZ_VERSION)
 	@$(RM) -r $(ZLIB_VERSION)
+	@$(RM) -r $(LIBVORBIS_VERSION)
+	@$(RM) -r $(LIBFAAD2_VERSION)
+	@$(RM) -r $(LIBARCHIVE_VERSION)
+	@$(RM) -r $(MXML_VERSION)
+	@$(RM) -r $(EXPAT_VERSION)
+	@$(RM) -r $(PHYSFS_VERSION)
+	@$(RM) -r $(NETTLE_VERSION)
+	@$(RM) -r $(WSLAY_VERSION)
