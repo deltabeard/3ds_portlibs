@@ -474,12 +474,13 @@ $(FMT): $(FMT_SRC)
 	 patch -Np1 -i ../fmt.patch && \
 	 cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_CXX_FLAGS="${CFLAGS}" -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/armv6k -DFMT_TEST=OFF .
 	@$(MAKE) -C $(FMT_VERSION) VERBOSE=1
-	
-$(LIBARCHIVE): $(LIBARCHIVE_SRC)
+
+# compatibility mode for freeShop, without lzma and bzip2 support
+$(LIBARCHIVE): $(ZLIB) install-zlib $(LIBARCHIVE_SRC)
 	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xaf $<
 	@cd $(LIBARCHIVE_VERSION) && \
 	 patch -Np1 -i ../libarchive.patch && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --without-bz2lib --without-lzma --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
 	@$(MAKE) -C $(LIBARCHIVE_VERSION)
 
 $(MXML): $(MXML_SRC)

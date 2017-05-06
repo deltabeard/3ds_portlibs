@@ -55,13 +55,14 @@ List of portlibs supported
 * libmad
 * libogg
 * libpng (requires zlib)
-* libvorbis
+* libvorbis (requires libogg)
 * libxmp-lite
 * nettle
 * minixml
 * mbedtls (requires zlib) (without net component)
 * sqlite
 * tinyxml2
+* tremor (requires libogg)
 * wslay
 * xz
 * zlib
@@ -70,7 +71,6 @@ List of portlibs temporary unsupported
 --------------------------------------
 
 * libxml2
-* tremor (requires libogg)
 
 
 Download links:
@@ -91,7 +91,7 @@ Download links:
 * [libpng-1.6.21.tar.xz] (http://prdownloads.sourceforge.net/libpng/libpng-1.6.21.tar.xz?download)
 * [libvorbis-1.3.5] (http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz)
 * [libxml2-2.9.3] (http://xmlsoft.org/sources/libxml2-2.9.3.tar.gz)
-* [libxmp-lite-4.3.10.tar.gz](http://sourceforge.net/projects/xmp/files/libxmp/4.3.10/libxmp-lite-4.3.10.tar.gz/download)
+* [libxmp-lite-4.3.10.tar.gz] (http://sourceforge.net/projects/xmp/files/libxmp/4.3.10/libxmp-lite-4.3.10.tar.gz/download)
 * [nettle-3.3] (https://ftp.gnu.org/gnu/nettle/nettle-3.3.tar.gz)
 * [minixml-2.9] (https://github.com/michaelrsweet/mxml/releases/download/release-2.9/mxml-2.9.tar.gz)
 * [mbedtls-2.2.1] (https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz)

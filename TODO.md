@@ -8,11 +8,6 @@ General
 
 Backup lib archives which are not on github
 
-libarchive
-----------
-
-freeShop wasn't working with those directives, is it now ?
-
 libxml2
 -------
 
