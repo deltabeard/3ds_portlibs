@@ -343,10 +343,11 @@ $(BZIP2): $(BZIP2_SRC)
 	@cd $(BZIP2_VERSION)
 	@$(MAKE) -C $(BZIP2_VERSION) CC=arm-none-eabi-gcc AR=arm-none-eabi-ar RANLIB=arm-none-eabi-ranlib CPPFLAGS="$(CPPFLAGS)" CFLAGS="-D_FILE_OFFSET_BITS=64 -Winline $(CFLAGS)" libbz2.a
 
+# without-bzip2: for compatibility when using freetype without bzip2 included
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xjf $<
 	@cd $(FREETYPE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-harfbuzz
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-harfbuzz --without-bzip2
 	@$(MAKE) -C $(FREETYPE_VERSION)
 
 $(GIFLIB): $(GIFLIB_SRC)
@@ -439,6 +440,7 @@ $(TINYXML): $(TINYXML_SRC)
 $(TREMOR): $(TREMOR_SRC)
 	@[ -d $(TREMOR_VERSION) ] || tar -xzf $<
 	@cd $(TREMOR_VERSION) && \
+	 patch -Np1 -i ../tremor.patch && \
 	 ./autogen.sh --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --disable-oggtest
 	@$(MAKE) -C $(TREMOR_VERSION)
 
