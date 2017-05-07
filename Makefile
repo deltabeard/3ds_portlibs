@@ -214,7 +214,7 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
 all:
 	@echo "Please choose one of the following targets:"
 	@echo "  $(BZIP2)"
-	@echo "  $(FREETYPE) (requires zlib to be installed)"
+	@echo "  $(FREETYPE) (requires $(LIBPNG) and zlib to be installed)"
 	@echo "  $(GIFLIB)"
 	@echo "  $(JANSSON)"
 	@echo "  $(LIBCONFIG)"
@@ -343,11 +343,11 @@ $(BZIP2): $(BZIP2_SRC)
 	@cd $(BZIP2_VERSION)
 	@$(MAKE) -C $(BZIP2_VERSION) CC=arm-none-eabi-gcc AR=arm-none-eabi-ar RANLIB=arm-none-eabi-ranlib CPPFLAGS="$(CPPFLAGS)" CFLAGS="-D_FILE_OFFSET_BITS=64 -Winline $(CFLAGS)" libbz2.a
 
-# without-bzip2: for compatibility when using freetype without bzip2 included
+# without-bzip2 and with-png=yes : compatibility issues even if we includebzip2 in project. libpng is enabled also for compatibility issues
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xjf $<
 	@cd $(FREETYPE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-harfbuzz --without-bzip2
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-harfbuzz --without-bzip2 --with-png=yes
 	@$(MAKE) -C $(FREETYPE_VERSION)
 
 $(GIFLIB): $(GIFLIB_SRC)
