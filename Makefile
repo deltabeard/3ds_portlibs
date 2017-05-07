@@ -239,7 +239,7 @@ all:
 	@echo "  $(EXPAT)"
 	@echo "  $(NETTLE)"
 	@echo "  $(WSLAY)"
-	@echo "  $(SPEEX)"
+	@echo "  $(SPEEX) (requires $(LIBOGG) to be installed)"
 
 ######################################
 # Download 
