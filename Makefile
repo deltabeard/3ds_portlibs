@@ -234,7 +234,7 @@ all:
 	@echo "  $(LIBVORBIS) (requires $(LIBOGG) to be installed)"
 	@echo "  $(LIBFAAD2)"
 	@echo "  $(FMT)"
-	@echo "  $(LIBARCHIVE)"
+	@echo "  $(LIBARCHIVE) (requires zlib to be installed)"
 	@echo "  $(MXML)"
 	@echo "  $(EXPAT)"
 	@echo "  $(NETTLE)"
@@ -476,11 +476,11 @@ $(FMT): $(FMT_SRC)
 	@$(MAKE) -C $(FMT_VERSION) VERBOSE=1
 
 # compatibility mode for freeShop, without lzma and bzip2 support
-$(LIBARCHIVE): $(ZLIB) install-zlib $(LIBARCHIVE_SRC)
+$(LIBARCHIVE): $(LIBARCHIVE_SRC)
 	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xaf $<
 	@cd $(LIBARCHIVE_VERSION) && \
 	 patch -Np1 -i ../libarchive.patch && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --without-bz2lib --without-lzma --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-bz2lib --without-lzma --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
 	@$(MAKE) -C $(LIBARCHIVE_VERSION)
 
 $(MXML): $(MXML_SRC)
