@@ -43,6 +43,7 @@ List of portlibs supported
 
 * bzip2
 * expat
+* ffmpeg
 * freetype (requires zlib)
 * giflib
 * jansson
@@ -54,9 +55,13 @@ List of portlibs supported
 * libjpeg-turbo
 * libmad
 * libogg
+* libopus
+* libopusfile (requires libopus)
 * libpng (requires zlib)
+* libssh2 (requires mbedtls and zlib)
 * libvorbis (requires libogg)
 * libxmp-lite
+* mpg123
 * nettle
 * minixml
 * mbedtls (requires zlib) (without net component)
@@ -77,6 +82,7 @@ Download links:
 
 * [bzip2-1.0.6] (http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz)
 * [expat-2.1.0] (http://sourceforge.net/projects/expat/files/expat/2.1.0/expat-2.1.0.tar.gz)
+* [ffmpeg-3.2.2] (http://ffmpeg.org/releases/ffmpeg-3.2.2.tar.bz2)
 * [freetype-2.6.2.tar.bz2] (http://download.savannah.gnu.org/releases/freetype/freetype-2.6.2.tar.bz2)
 * [giflib-5.1.1] (http://sourceforge.net/projects/giflib/files/giflib-5.1.1.tar.bz2)
 * [jansson-v2.7.tar.gz] (https://github.com/akheron/jansson/archive/v2.7.tar.gz)
@@ -88,13 +94,17 @@ Download links:
 * [libjpeg-turbo-1.4.2.tar.gz] (http://sourceforge.net/projects/libjpeg-turbo/files/1.4.2/libjpeg-turbo-1.4.2.tar.gz/download)
 * [libmad-0.15.1b] (http://sourceforge.net/projects/mad/files/libmad/0.15.1b/libmad-0.15.1b.tar.gz)
 * [libogg-1.3.2] (http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz)
+* [libopus-1.1.4] (http://downloads.xiph.org/releases/opus/opus-1.1.4.tar.gz)
+* [libopusfile-0.8] (https://archive.mozilla.org/pub/opus/opusfile-0.8.tar.gz)
 * [libpng-1.6.21.tar.xz] (http://prdownloads.sourceforge.net/libpng/libpng-1.6.21.tar.xz?download)
+* [libssh-1.8.0] (https://www.libssh2.org/download/libssh2-1.8.0.tar.gz)
 * [libvorbis-1.3.5] (http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz)
 * [libxml2-2.9.3] (http://xmlsoft.org/sources/libxml2-2.9.3.tar.gz)
 * [libxmp-lite-4.3.10.tar.gz] (http://sourceforge.net/projects/xmp/files/libxmp/4.3.10/libxmp-lite-4.3.10.tar.gz/download)
 * [nettle-3.3] (https://ftp.gnu.org/gnu/nettle/nettle-3.3.tar.gz)
 * [minixml-2.9] (https://github.com/michaelrsweet/mxml/releases/download/release-2.9/mxml-2.9.tar.gz)
 * [mbedtls-2.2.1] (https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz)
+* [mpg123-1.23.8] (https://www.mpg123.de/download/mpg123-1.23.8.tar.bz2)
 * [speex-1.2rc1] (http://downloads.xiph.org/releases/speex/speex-1.2rc1.tar.gz)
 * [sqlite-autoconf-3100200.tar.gz] (https://www.sqlite.org/2016/sqlite-autoconf-3100200.tar.gz)
 * [tinyxml2-3.0.0.tar.gz] (https://github.com/leethomason/tinyxml2/archive/3.0.0.tar.gz)
@@ -110,3 +120,5 @@ Thanks to :
 - The original 3DS portlibs git and all the developers behind it
 - Cruel, with his fork of portlibs containing various libs which can be useful
 - carstene1ns for his original portlibs of speex for Wii : https://github.com/carstene1ns/portlibs-wii/tree/master/speex
+- smartperson for the libmbedtls fix and the libssh2 port : https://github.com/smartperson/3ds_portlibs
+- deltabeard for the libopus, libopusfile, mpg123 and ffmpeg ports : https://github.com/deltabeard/3ds_portlibs

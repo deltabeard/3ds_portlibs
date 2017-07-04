@@ -63,9 +63,9 @@ LIBXMP_LITE_SRC       := $(LIBXMP_LITE_VERSION).tar.gz
 LIBXMP_LITE_DOWNLOAD  := http://sourceforge.net/projects/xmp/files/libxmp/4.3.10/libxmp-lite-4.3.10.tar.gz/download
 
 MBED                  := mbedtls
-MBED_VERSION          := $(MBED)-2.2.1
+MBED_VERSION          := $(MBED)-2.4.0
 MBED_SRC              := $(MBED_VERSION).tgz
-MBED_DOWNLOAD         := "https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz"
+MBED_DOWNLOAD         := "https://tls.mbed.org/download/mbedtls-2.4.0-gpl.tgz"
 
 SQLITE                := sqlite
 SQLITE_VERSION        := $(SQLITE)-autoconf-3100200
@@ -161,6 +161,30 @@ SPEEX_VERSION         := $(SPEEX)-1.2rc1
 SPEEX_SRC             := $(SPEEX_VERSION).tar.gz
 SPEEX_DOWNLOAD        := http://downloads.xiph.org/releases/speex/speex-1.2rc1.tar.gz
 
+LIBOPUS               := libopus
+LIBOPUS_VERSION       := opus-1.1.4
+LIBOPUS_SRC           := $(LIBOPUS_VERSION).tar.gz
+LIBOPUS_DOWNLOAD      := "http://downloads.xiph.org/releases/opus/opus-1.1.4.tar.gz"
+
+LIBOPUSFILE           := libopusfile
+LIBOPUSFILE_VERSION   := opusfile-0.8
+LIBOPUSFILE_SRC       := $(LIBOPUSFILE_VERSION).tar.gz
+LIBOPUSFILE_DOWNLOAD  := "https://archive.mozilla.org/pub/opus/opusfile-0.8.tar.gz"
+
+FFMPEG                := ffmpeg
+FFMPEG_VERSION       := $(FFMPEG)-3.2.2
+FFMPEG_SRC            := $(FFMPEG_VERSION).tar.bz2
+FFMPEG_DOWNLOAD       := http://ffmpeg.org/releases/ffmpeg-3.2.2.tar.bz2
+
+MPG123                := mpg123
+MPG123_VERSION        := $(MPG123)-1.23.8
+MPG123_SRC            := $(MPG123_VERSION).tar.bz2
+MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.23.8.tar.bz2"
+
+LIBSSH2                := libssh2
+LIBSSH2_VERSION        := $(LIBSSH2)-1.8.0
+LIBSSH2_SRC            := $(LIBSSH2_VERSION).tar.xz
+LIBSSH2_DOWNLOAD       := https://www.libssh2.org/download/libssh2-1.8.0.tar.gz
 
 ######################################
 # Global config for compiling those libs
@@ -205,7 +229,12 @@ export LDFLAGS        := -L$(PORTLIBS_PATH)/armv6k/lib
 		$(EXPAT) \
 		$(NETTLE) \
 		$(WSLAY) \
-		$(SPEEX)
+		$(SPEEX) \
+		$(LIBOPUS) \
+		$(LIBOPUSFILE) \
+		$(FFMPEG) \
+		$(MPG123) \
+		$(LIBSSH2)
 			
 ######################################
 # Help 
@@ -240,12 +269,17 @@ all:
 	@echo "  $(NETTLE)"
 	@echo "  $(WSLAY)"
 	@echo "  $(SPEEX) (requires $(LIBOGG) to be installed)"
+	@echo "  $(LIBOPUS) (requires $(LIBOGG) to be installed)"
+	@echo "  $(LIBOPUSFILE) (requires $(LIBOPUS) to be installed)"
+	@echo "  $(FFMPEG)"
+	@echo "  $(MPG123)"
+	@echo "  $(LIBSSH2) (requires zlib and $(MBED) to be installed)"
 
 ######################################
 # Download 
 ######################################
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC) $(LIBVORBIS_SRC) $(LIBFAAD2_SRC) $(FMT_SRC) $(LIBARCHIVE_SRC) $(MXML_SRC) $(EXPAT_SRC) $(NETTLE_SRC) $(WSLAY_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXML2_SRC) $(LIBXMP_LITE_SRC) $(MBED_SRC) $(SQLITE_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(ZLIB_SRC) $(LIBVORBIS_SRC) $(LIBFAAD2_SRC) $(FMT_SRC) $(LIBARCHIVE_SRC) $(MXML_SRC) $(EXPAT_SRC) $(NETTLE_SRC) $(WSLAY_SRC) $(LIBOPUS_SRC) $(LIBOPUSFILE_SRC) $(FFMPEG_SRC) $(MPG123_SRC) $(LIBSSH2_SRC)
 
 DOWNLOAD = wget --no-check-certificate -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -334,6 +368,21 @@ $(WSLAY_SRC):
 $(SPEEX_SRC):
 	@$(call DOWNLOAD,$@,$(SPEEX_DOWNLOAD))
 
+$(LIBOPUS_SRC):
+	@$(call DOWNLOAD,$@,$(LIBOPUS_DOWNLOAD))
+
+$(LIBOPUSFILE_SRC):
+	@$(call DOWNLOAD,$@,$(LIBOPUSFILE_DOWNLOAD))
+
+$(FFMPEG_SRC):
+	@$(call DOWNLOAD,$@,$(FFMPEG_DOWNLOAD))
+
+$(MPG123_SRC):
+	@$(call DOWNLOAD,$@,$(MPG123_DOWNLOAD))
+
+$(LIBSSH2_SRC):
+	@$(call DOWNLOAD,$@,$(LIBSSH2_DOWNLOAD))
+
 ######################################
 # Cross-compile directives for each lib with patches if need one
 ######################################
@@ -415,7 +464,7 @@ $(LIBXMP_LITE): $(LIBXMP_LITE_SRC)
 $(MBED): $(MBED_SRC)
 	@[ -d $(MBED_VERSION) ] || tar xzf $<
 	@cd $(MBED_VERSION) && \
-	 patch -Np1 -i ../libmbedtls-2.2.1.patch && \
+	 patch -Np1 -i ../libmbedtls-2.4.0.patch && \
 	 cmake -DCMAKE_SYSTEM_NAME=Generic -DCMAKE_C_COMPILER=$(DEVKITARM)/bin/arm-none-eabi-gcc \
 	 -DCMAKE_CXX_COMPILER=$(DEVKITARM)/bin/arm-none-eabi-g++ \
 	 -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/armv6k -DCMAKE_C_FLAGS="$(CFLAGS)" \
@@ -457,13 +506,13 @@ $(ZLIB): $(ZLIB_SRC)
 	@$(MAKE) -C $(ZLIB_VERSION)
 
 $(LIBVORBIS): $(LIBVORBIS_SRC)
-	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
+	@[ -d $(LIBVORBIS_VERSION) ] || tar -xJf $<
 	@cd $(LIBVORBIS_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBVORBIS_VERSION)
 	
 $(LIBFAAD2): $(LIBFAAD2_SRC)
-	@[ -d $(LIBFAAD2_VERSION) ] || tar -xaf $<
+	@[ -d $(LIBFAAD2_VERSION) ] || tar -xzf $<
 	@cd $(LIBFAAD2_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBFAAD2_VERSION)
@@ -477,32 +526,32 @@ $(FMT): $(FMT_SRC)
 
 # compatibility mode for freeShop, without lzma and bzip2 support
 $(LIBARCHIVE): $(LIBARCHIVE_SRC)
-	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xaf $<
+	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xzf $<
 	@cd $(LIBARCHIVE_VERSION) && \
 	 patch -Np1 -i ../libarchive.patch && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --without-bz2lib --without-lzma --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
 	@$(MAKE) -C $(LIBARCHIVE_VERSION)
 
 $(MXML): $(MXML_SRC)
-	@[ -d $(MXML_VERSION) ] || tar -xaf $<
+	@[ -d $(MXML_VERSION) ] || tar -xzf $<
 	@cd $(MXML_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --disable-threads
 	@$(MAKE) -C $(MXML_VERSION) libmxml.a
 	
 $(EXPAT): $(EXPAT_SRC)
-	@[ -d $(EXPAT_VERSION) ] || tar -xaf $<
+	@[ -d $(EXPAT_VERSION) ] || tar -xzf $<
 	@cd $(EXPAT_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(EXPAT_VERSION)
 
 $(NETTLE): $(NETTLE_SRC)
-	@[ -d $(NETTLE_VERSION) ] || tar -xaf $<
+	@[ -d $(NETTLE_VERSION) ] || tar -xzf $<
 	@cd $(NETTLE_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-tools
 	@$(MAKE) -C $(NETTLE_VERSION) libnettle.a
 
 $(WSLAY): $(WSLAY_SRC)
-	@[ -d $(WSLAY_VERSION) ] || tar -xaf $<
+	@[ -d $(WSLAY_VERSION) ] || tar -xzf $<
 	@cd $(WSLAY_VERSION) && \
 	 autoreconf -i && automake && autoconf && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
@@ -513,6 +562,67 @@ $(SPEEX): $(SPEEX_SRC)
 	@cd $(SPEEX_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-fixed-point CFLAGS="$(CFLAGS)"
 	@$(MAKE) -C $(SPEEX_VERSION)
+
+
+$(LIBOPUS): $(LIBOPUS_SRC)
+	@[ -d $(LIBOPUS_VERSION) ] || tar -xzf $<
+	@cd $(LIBOPUS_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-extra-programs --disable-rtcd --enable-fixed-point
+	@$(MAKE) -C $(LIBOPUS_VERSION)
+
+$(LIBOPUSFILE): $(LIBOPUSFILE_SRC)
+	@[ -d $(LIBOPUSFILE_VERSION) ] || tar -xzf $<
+	@cd $(LIBOPUSFILE_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-fixed-point
+	@$(MAKE) -C $(LIBOPUSFILE_VERSION)
+
+$(FFMPEG): $(FFMPEG_SRC)
+	@[ -d $(FFMPEG_VERSION) ] || tar -xjf $<
+	@cd $(FFMPEG_VERSION) && \
+	./configure --prefix=$(PORTLIBS_PATH)/armv6k \
+		--enable-cross-compile \
+		--cross-prefix=$(DEVKITARM)/bin/arm-none-eabi- \
+		--disable-shared \
+		--disable-runtime-cpudetect \
+		--disable-armv5te \
+		--disable-programs \
+		--disable-doc \
+		--disable-everything \
+		--enable-gpl \
+		--enable-decoder=aac,ac3,mp3,opus,flac,pcm_s16le \
+		--enable-demuxer=mov,h264,m4a,ogg \
+		--enable-protocol=file \
+		--enable-static \
+		--enable-small \
+		--pkg-config=$(PWD)/arm-none-eabi-pkg-config \
+		--arch=armv6k \
+		--cpu=mpcore \
+		--disable-armv6t2 \
+		--disable-neon \
+		--target-os=none \
+		--extra-cflags=" -DARM11 -D_3DS -mword-relocations -fomit-frame-pointer -ffast-math -march=armv6k -mtune=mpcore -mfloat-abi=hard" \
+		--extra-cxxflags=" -DARM11 -D_3DS -mword-relocations -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -std=gnu++11 -march=armv6k -mtune=mpcore -mfloat-abi=hard" \
+		--extra-ldflags=" -specs=3dsx.specs -march=armv6k -mtune=mpcore -mfloat-abi=hard -L$(DEVKITARM)/lib  -L$(DEVKITPRO)/libctru/lib  -L$(DEVKITPRO)/portlibs/armv6k/lib -lctru " \
+		--disable-bzlib \
+		--disable-iconv \
+		--disable-lzma \
+		--disable-sdl \
+		--disable-securetransport \
+		--disable-xlib
+	@$(MAKE) -C $(FFMPEG_VERSION)
+
+$(MPG123): $(MPG123_SRC)
+	@[ -d $(MPG123_VERSION) ] || tar -xjf $<
+	@cd $(MPG123_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-ipv6=no --enable-network=no --enable-messages=no --enable-8bit=no --enable-32bit=no --enable-real=no --with-optimization=2  --with-cpu=arm_nofpu --enable-layer1=no --enable-layer2=no
+	@$(MAKE) -C $(MPG123_VERSION) src/libmpg123/libmpg123.la
+
+$(LIBSSH2): $(LIBSSH2_SRC)
+	@[ -d $(LIBSSH2_VERSION) ] || tar -xJf $<
+	@cd $(LIBSSH2_VERSION) && \
+	 patch -Np1 -i ../libssh2-1.8.0.patch && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --with-mbedtls=$(PORTLIBS_PATH)/armv6k --with-libmbedtls-prefix=$(PORTLIBS_PATH)/armv6k --disable-examples-build
+	@$(MAKE) -C $(LIBSSH2_VERSION)
 
 ######################################
 # Installing libs in devkitPro/portlibs/armv6k
@@ -527,6 +637,13 @@ install:
 		chmod a+r $(PORTLIBS_PATH)/armv6k/include/bzlib.h; \
 		cp -fv $(BZIP2_VERSION)/libbz2.a $(PORTLIBS_PATH)/armv6k/lib; \
 		chmod a+r $(PORTLIBS_PATH)/armv6k/lib/libbz2.a; \
+	fi
+	@if [ -d $(MPG123_VERSION) ]; then \
+		cp -fv $(MPG123_VERSION)/libmpg123.pc $(PORTLIBS_PATH)/armv6k/lib/pkgconfig; \
+		cp -fv $(MPG123_VERSION)/src/libmpg123/mpg123.h $(PORTLIBS_PATH)/armv6k/include; \
+		cp -fv $(MPG123_VERSION)/src/libmpg123/fmt123.h $(PORTLIBS_PATH)/armv6k/include; \
+		cp -fv $(MPG123_VERSION)/src/libmpg123/.libs/libmpg123.a $(PORTLIBS_PATH)/armv6k/lib; \
+		cp -fv $(MPG123_VERSION)/src/libmpg123/libmpg123.la $(PORTLIBS_PATH)/armv6k/lib; \
 	fi
 	@[ ! -d $(FREETYPE_VERSION) ] || $(MAKE) -C $(FREETYPE_VERSION) install
 	@[ ! -d $(GIFLIB_VERSION) ] || $(MAKE) -C $(GIFLIB_VERSION) install
@@ -552,7 +669,11 @@ install:
 	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
 	@[ ! -d $(NETTLE_VERSION) ] || $(MAKE) -C $(NETTLE_VERSION) install-static
 	@[ ! -d $(WSLAY_VERSION) ] || $(MAKE) -C $(WSLAY_VERSION)/lib install
-	@[ ! -d $(SPEEX_VERSION) ] || $(MAKE) -C $(SPEEX_VERSION) install	
+	@[ ! -d $(SPEEX_VERSION) ] || $(MAKE) -C $(SPEEX_VERSION) install
+	@[ ! -d $(LIBOPUS_VERSION) ] || $(MAKE) -C $(LIBOPUS_VERSION) install
+	@[ ! -d $(LIBOPUSFILE_VERSION) ] || $(MAKE) -C $(LIBOPUSFILE_VERSION) install
+	@[ ! -d $(FFMPEG_VERSION) ] || $(MAKE) -C $(FFMPEG_VERSION) install
+	@[ ! -d $(LIBSSH2_VERSION) ] || $(MAKE) -C $(LIBSSH2_VERSION) install
 	
 ######################################
 # Cleaning directory and files
@@ -586,3 +707,8 @@ clean:
 	@$(RM) -r $(NETTLE_VERSION)
 	@$(RM) -r $(WSLAY_VERSION)
 	@$(RM) -r $(SPEEX_VERSION)
+	@$(RM) -r $(LIBOPUS_VERSION)
+	@$(RM) -r $(LIBOPUSFILE_VERSION)
+	@$(RM) -r $(FFMPEG_VERSION)
+	@$(RM) -r $(MPG123_VERSION)
+	@$(RM) -r $(LIBSSH2_VERSION)
