@@ -162,9 +162,9 @@ SPEEX_SRC             := $(SPEEX_VERSION).tar.gz
 SPEEX_DOWNLOAD        := http://downloads.xiph.org/releases/speex/speex-1.2rc1.tar.gz
 
 LIBOPUS               := libopus
-LIBOPUS_VERSION       := opus-1.1.4
+LIBOPUS_VERSION       := opus-1.2.1
 LIBOPUS_SRC           := $(LIBOPUS_VERSION).tar.gz
-LIBOPUS_DOWNLOAD      := "http://downloads.xiph.org/releases/opus/opus-1.1.4.tar.gz"
+LIBOPUS_DOWNLOAD      := "https://archive.mozilla.org/pub/opus/opus-1.2.1.tar.gz"
 
 LIBOPUSFILE           := libopusfile
 LIBOPUSFILE_VERSION   := opusfile-0.8
@@ -177,9 +177,9 @@ FFMPEG_SRC            := $(FFMPEG_VERSION).tar.bz2
 FFMPEG_DOWNLOAD       := http://ffmpeg.org/releases/ffmpeg-3.2.2.tar.bz2
 
 MPG123                := mpg123
-MPG123_VERSION        := $(MPG123)-1.23.8
+MPG123_VERSION        := $(MPG123)-1.25.1
 MPG123_SRC            := $(MPG123_VERSION).tar.bz2
-MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.23.8.tar.bz2"
+MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.25.1.tar.bz2"
 
 LIBSSH2                := libssh2
 LIBSSH2_VERSION        := $(LIBSSH2)-1.8.0
