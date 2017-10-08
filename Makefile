@@ -259,16 +259,9 @@ $(FFMPEG): $(FFMPEG_SRC)
 		--disable-doc \
 		--disable-network \
 		--enable-gpl \
-		--disable-encoders \
-		--disable-hwaccels \
-		--disable-muxers \
-		--disable-bsfs \
-		--disable-protocols \
-		--disable-indevs \
-		--disable-outdevs \
-		--disable-devices \
-		--disable-filters \
-		--disable-decoder=h264,h263,hevc,aac \
+		--disable-everything \
+		--enable-decoder=aac,alac,ape,ac3,flac,mp3,mpeg4,opus,pcm_s16le,pcm_s24le,pcm_s32le,pcm_s8,pcm_u8,tta,vorbis,wmalossless,wavpack \
+		--enable-demuxer=aac,ac3,aiff,ape,asf,avi,caf,flac,matroska,mp3,mp4,m4a,pcm_s16le,pcm_s24le,pcm_s32le,pcm_s8,pcm_u8,ogg,opus,tta,wav,webm,wv \
 		--enable-protocol=file \
 		--enable-static \
 		--enable-small \
@@ -337,13 +330,13 @@ $(LIBOGG): $(LIBOGG_SRC)
 $(LIBOPUS): $(LIBOPUS_SRC)
 	@[ -d $(LIBOPUS_VERSION) ] || tar -xzf $<
 	@cd $(LIBOPUS_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-extra-programs --disable-rtcd --enable-fixed-point
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --disable-extra-programs --disable-rtcd
 	@$(MAKE) -C $(LIBOPUS_VERSION)
 
 $(LIBOPUSFILE): $(LIBOPUSFILE_SRC)
 	@[ -d $(LIBOPUSFILE_VERSION) ] || tar -xzf $<
 	@cd $(LIBOPUSFILE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static --enable-fixed-point
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOPUSFILE_VERSION)
 
 $(LIBPNG): $(LIBPNG_SRC)
