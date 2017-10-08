@@ -37,6 +37,21 @@ Currently supports the following portlibs:
 * xz
 * zlib
 
+## libopus
+
+Note that libopus currently requires a small modification to make ctrmus compile:
+
+Change opusfile.h (located on my machine at "/opt/devkitpro/portlibs/armv6k/include/opus/opusfile.h") at line 110 to "# include \<opus/opus_multistream.h\>".
+
+## mpg123
+
+To compile mpg123, just run `make mpg123` in the 3ds_portlibs folder. This will compile all that is required of mpg123. Installing the library has to be done manually though, and can be done by running the following commands:
+* cp mpg123-1.23.8/src/libmpg123/.libs/libmpg123.a /opt/devkitpro/portlibs/armv6k/lib/
+* cp mpg123-1.23.8/src/libmpg123/libmpg123.la /opt/devkitpro/portlibs/armv6k/lib/
+* cp mpg123-1.23.8/libmpg123.pc /opt/devkitpro/portlibs/armv6k/lib/pkgconfig/
+* cp mpg123-1.23.8/src/libmpg123/mpg123.h /opt/devkitpro/portlibs/armv6k/include/
+* cp mpg123-1.23.8/src/libmpg123/fmt123.h /opt/devkitpro/portlibs/armv6k/include/
+
 Download links:
 
 * [bzip2-1.0.6] (http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz)

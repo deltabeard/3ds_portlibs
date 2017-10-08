@@ -49,14 +49,14 @@ LIBOGG_SRC            := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD       := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
 LIBOPUS               := libopus
-LIBOPUS_VERSION       := opus-1.1.4
+LIBOPUS_VERSION       := opus-1.2.1
 LIBOPUS_SRC           := $(LIBOPUS_VERSION).tar.gz
-LIBOPUS_DOWNLOAD      := "http://downloads.xiph.org/releases/opus/opus-1.1.4.tar.gz"
+LIBOPUS_DOWNLOAD      := "http://downloads.xiph.org/releases/opus/opus-1.2.1.tar.gz"
 
 LIBOPUSFILE           := libopusfile
-LIBOPUSFILE_VERSION   := opusfile-0.8
+LIBOPUSFILE_VERSION   := opusfile-0.9
 LIBOPUSFILE_SRC       := $(LIBOPUSFILE_VERSION).tar.gz
-LIBOPUSFILE_DOWNLOAD  := "https://archive.mozilla.org/pub/opus/opusfile-0.8.tar.gz"
+LIBOPUSFILE_DOWNLOAD  := "https://archive.mozilla.org/pub/opus/opusfile-0.9.tar.gz"
 
 LIBPNG                := libpng
 LIBPNG_VERSION        := $(LIBPNG)-1.6.21
@@ -79,9 +79,9 @@ MBED_SRC              := $(MBED_VERSION).tgz
 MBED_DOWNLOAD         := "https://tls.mbed.org/download/mbedtls-2.2.1-gpl.tgz"
 
 MPG123                := mpg123
-MPG123_VERSION        := $(MPG123)-1.23.8
+MPG123_VERSION        := $(MPG123)-1.25.6
 MPG123_SRC            := $(MPG123_VERSION).tar.bz2
-MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.23.8.tar.bz2"
+MPG123_DOWNLOAD       := "https://www.mpg123.de/download/mpg123-1.25.6.tar.bz2"
 
 SQLITE                := sqlite
 SQLITE_VERSION        := $(SQLITE)-autoconf-3100200
